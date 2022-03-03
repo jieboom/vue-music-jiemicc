@@ -1,30 +1,55 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div class="jiemicc-music">
+    <div class="app-nav">
+      <app-header></app-header>
+      <app-tabs></app-tabs>
+    </div>
+    <div class="app-content">
+      <router-view></router-view>
+    </div>
   </div>
-  <router-view/>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import appHeader from '@/components/app/appHeader.vue'
+import appTabs from '@/components/app/appTabs.vue'
+import { getRecommned, Albums, Sliders } from './service/recommend'
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: @color-theme;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default defineComponent({
+  name: 'App',
+  components: {
+    appHeader,
+    appTabs
+  },
+  data () {
+    return {
+      albums: [] as Albums[],
+      sliders: [] as Sliders[]
     }
+  },
+  async created () {
+    const { albums, sliders } = await getRecommned()
+    this.albums = albums
+    this.sliders = sliders
   }
+})
+</script>
+<style lang="less">
+.app-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: @color-background;
+}
+.app-content {
+  position: fixed;
+  z-index: 99;
+  top: 88px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: @color-background;
 }
 </style>
